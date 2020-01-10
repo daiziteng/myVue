@@ -52,7 +52,7 @@ axios.interceptors.response.use(
 )
 
 router.beforeEach((to, from, next) => {
-  if (to.path === '/') {
+  if (to.path === '/'||to.path==='/register') {
     next();
   } else {
     let token = localStorage.getItem('Authorization');
@@ -75,20 +75,4 @@ new Vue({
 })
 
 
-
-
-
-
-// 添加请求拦截器
-// axios.interceptors.request.use(
-//   config => {
-//     if (localStorage.getItem('Authorization')) {
-//       config.headers.Authorization = localStorage.getItem('Authorization');
-//     }
-//     return config
-//   },
-//   error => {
-//     return Promise.reject(error)
-//   }
-// )
 

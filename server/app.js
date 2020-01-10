@@ -1,6 +1,7 @@
 var express = require("express");
 
 var indexRouter = require("./router/index");
+var loginRouter = require("./router/login");
 
 var app = express();
 
@@ -34,6 +35,7 @@ app.use(
     })
 );
 app.use("/", indexRouter);
+app.use("/", loginRouter);
 
 //启动监听
 app.listen(3000, function () {
