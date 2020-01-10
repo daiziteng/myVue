@@ -11,6 +11,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 // import store from '../store'
 import store from '../store';
 
+    // "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
 
 
 // 调用文件

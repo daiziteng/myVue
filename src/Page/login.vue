@@ -5,7 +5,7 @@
         <div class="manage_tip">
           <p>后台管理系统</p>
         </div>
-        <el-form :model="loginForm" :rules="rules" ref="loginForm">
+        <el-form :model="loginForm" :rules="rules" ref="loginForm" >
           <el-form-item prop="username">
             <el-input v-model="loginForm.username" placeholder="用户名">
               <span>dsfsf</span>
@@ -14,13 +14,19 @@
           <el-form-item prop="password">
             <el-input type="password" placeholder="密码" v-model="loginForm.password"></el-input>
           </el-form-item>
+             <!-- <el-form-item prop="email">
+            <el-input type="email" placeholder="邮箱" v-model="loginForm.email"></el-input>
+          </el-form-item> -->
+            <el-checkbox v-model='checked' style='float:left'>记住密码</el-checkbox>
+            <br>
+            <br>
           <el-form-item>
             <el-button type="primary" @click="submitForm('loginForm')" class="submit_btn">登陆</el-button>
           </el-form-item>
         </el-form>
         <!-- <p class="tip">温馨提示：</p> -->
-        <p class="tip">未登录过的新用户，自动注册</p>
-        <p class="tip">注册过的用户可凭账号密码登录</p>
+        <!-- <p class="tip">未登录过的新用户，自动注册</p>
+        <p class="tip">注册过的用户可凭账号密码登录</p> -->
       </section>
     </transition>
   </div>
@@ -33,10 +39,11 @@ export default {
     return {
       userToken: "",
       // changeLogin:'',
-
+      checked:false,
       loginForm: {
         username: "",
-        password: ""
+        password: "",
+        email:'',
       },
       rules: {
         username: [
@@ -49,13 +56,31 @@ export default {
   },
   mounted() {
     this.showLogin = true;
+                
+
+    this.getCookie();
   },
   methods: {
     ...mapMutations(["changeLogin"]),
-    // ...mapMutations(["setToken"]),
     async submitForm(formName) {
       this.$refs[formName].validate(async valid => {
-        const user_name = this.loginForm.username; //获取用户输入用户名
+        // const email = this.loginForm.email;
+        // console.log(email)
+        // this.$axios
+        // .post('api/email',{
+        //   params:{
+        //     email:email
+        //   }
+        // })
+
+        if(valid){
+            const self =this;
+           if(self.checked == true){
+            self.setCookie(self.loginForm.username, self.loginForm.password, 7);
+          }else{
+            self.clearCookie();
+          }
+         const user_name = this.loginForm.username; //获取用户输入用户名
         const password = this.loginForm.password; //获取用户输入密码
         this.$axios
           .get("api/login", {
@@ -68,20 +93,54 @@ export default {
             }
           })
           .then(res => {
-            console.log(res);
+            console.log(res.data.status);
+            const code=res.data.status;
             //res是返回结果
-            this.userToken = "Bearer" + res.data.token;
+            if(code=='200'){
+          this.userToken = "Bearer" + res.data.token;
             this.changeLogin({ Authorization: this.userToken });
-            // console.log(this.userToken, this.changeLogin);
-
             this.$router.push("manage");
+            }else{
+                  this.$message.error('用户名或密码错误');
+            }
           })
           .catch(err => {
             console.log(err);
           });
+        }
+        
       });
-    }
+    },
+     //设置cookie
+            setCookie(c_name, c_pwd, exdays) {
+                var exdate = new Date(); //获取时间
+                exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
+                //字符串拼接cookie
+                window.document.cookie = "userName" + "=" + c_name + ";path=/;expires=" + exdate.toGMTString();
+                window.document.cookie = "userPwd" + "=" + c_pwd + ";path=/;expires=" + exdate.toGMTString();
+            },
+            //读取cookie
+            getCookie: function() {
+                if (document.cookie.length > 0) {
+                  this.checked=true 
+                    var arr = document.cookie.split('; '); //这里显示的格式需要切割一下自己可输出看下
+                    for (var i = 0; i < arr.length; i++) {
+                        var arr2 = arr[i].split('='); //再次切割
+                        //判断查找相对应的值
+                        if (arr2[0] == 'userName') {
+                            this.loginForm.username = arr2[1]; //保存到保存数据的地方
+                        } else if (arr2[0] == 'userPwd') {
+                            this.loginForm.password = arr2[1];
+                        }
+                    }
+                }
+            },
+            //清除cookie
+            clearCookie: function() {
+                this.setCookie("", "", -1); //修改2值都为空，天数为负1天就好了
+            }
   }
+
 };
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
