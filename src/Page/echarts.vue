@@ -121,7 +121,6 @@ export default {
   padding-right: 0px;
 }
 
-
 .border_light,
 .border_light::before,
 .border_light::after {
@@ -132,7 +131,7 @@ export default {
   right: 0;
 }
 .border_light {
-  z-index:999;
+  z-index: 999;
   position: relative;
   // width: 50%;
   width: 400px;
@@ -174,5 +173,4 @@ export default {
     clip: rect(0px, 440px, 440px, 436px);
   }
 }
-
 </style>

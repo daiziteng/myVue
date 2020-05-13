@@ -3,11 +3,6 @@ const router = express.Router();
 const jwt = require('../jwt/jwt')
 const db = require('../Dbconfig/dbTool')
 
-
-
-
-
-
 // 登陆界面逻辑
 router.get('/login', (req, res) => {
     var username = req.query.username;
@@ -33,7 +28,6 @@ router.get('/login', (req, res) => {
     }).catch(error => console.log('caught', error))
 })
 
-
 router.post('/register', (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
@@ -44,8 +38,6 @@ router.post('/register', (req, res) => {
     }).catch(error => console.log('caught', error))
 
 })
-
-
 
 
 

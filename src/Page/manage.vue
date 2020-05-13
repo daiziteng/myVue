@@ -124,7 +124,7 @@ export default {
     headTop,
     sideBar
   },
-  methods:{
+  methods:{ 
    
   }
 

@@ -13,7 +13,7 @@
           <el-menu-item-group>
             <el-menu-item index="table">表格操作</el-menu-item>
             <el-menu-item index="echarts">图表展示</el-menu-item>
-            <el-menu-item index="1-3">选项三</el-menu-item>
+            <el-menu-item index="fileupload">文件上传</el-menu-item>
             <el-menu-item index="orderList">订单列表</el-menu-item>
           </el-menu-item-group>
         </el-submenu>

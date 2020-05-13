@@ -28,10 +28,14 @@
               auto-complete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>
-            <el-button @click="resetForm('registerForm')">重置</el-button>
-          </el-form-item>
+          <!-- <el-form-item  > -->
+
+          <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>
+          <el-button @click="resetForm('registerForm')">重置</el-button>
+          <a class="link">
+            <router-link to="/">登陆界面</router-link>
+          </a>
+          <!-- </el-form-item> -->
         </el-form>
       </section>
     </transition>
@@ -119,7 +123,12 @@ export default {
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
-
+.link{
+  margin-left: 90px;
+  :hover{
+    color: red;
+  }
+}
 .manage_tip {
   position: absolute;
   width: 100%;

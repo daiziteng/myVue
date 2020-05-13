@@ -22,13 +22,11 @@
                 size="mini"
                 round
               >新增</el-button>
-
-        
             </el-col>
             <el-col :span="12" class="grid">
               <div style="float:right">
                 <el-input v-model="search" placeholder="请输入内容" style="width:180px"></el-input>
-                <el-button type="warning" icon="el-icon-search" size="big">搜索</el-button>
+                <el-button type="warning" @click="searchData" icon="el-icon-search" size="big">搜索</el-button>
               </div>
             </el-col>
           </el-row>
@@ -36,8 +34,8 @@
           <el-row>
             <el-col :span="24">
               <el-table :data="tableData" border stripe style="width: 100%">
-                <el-table-column prop="date" label="日期" width="180"></el-table-column>
-                <el-table-column prop="name" label="姓名" width="180"></el-table-column>
+                <el-table-column prop="date" label="日期"></el-table-column>
+                <el-table-column prop="name" label="姓名"></el-table-column>
                 <el-table-column prop="address" label="地址"></el-table-column>
                 <!-- scope.row代表当前对应行 -->
                 <el-table-column label="操作">
@@ -46,7 +44,7 @@
                       icon="el-icon-edit"
                       type="primary"
                       size="small"
-                      @click="editBook(scope.$index, scope.row)"
+                      @click="editData(scope.$index, scope.row)"
                     >编辑</el-button>
                     <el-button
                       icon="el-icon-delete"
@@ -62,20 +60,20 @@
                 style="text-align:left !important"
                 :visible.sync="dialogVisible"
               >
-                <el-form ref="editsForm" :model="editsForm" label-width="80px">
-                  <el-form-item label="日期" style="width:600px">
+                <el-form ref="editsForm" :model="editsForm" :rules="rules" label-width="80px">
+                  <el-form-item label="日期" style="width:600px" prop="date">
                     <el-input v-model="editsForm.date" placeholder="请输入日期"></el-input>
                   </el-form-item>
-                  <el-form-item label="姓名" style="width:600px">
+                  <el-form-item label="姓名" style="width:600px" prop="name">
                     <el-input v-model="editsForm.name" placeholder="请输入姓名"></el-input>
                   </el-form-item>
-                  <el-form-item label="地址" style="width:600px">
+                  <el-form-item label="地址" style="width:600px" prop="address">
                     <el-input v-model="editsForm.address" placeholder="请输入地址"></el-input>
                   </el-form-item>
                 </el-form>
                 <span slot="footer" class="dialog-footer">
-                  <el-button type="success" @click="saveBook()">提交</el-button>
-                  <el-button type="primary" @click="dialogVisible = false">取消</el-button>
+                  <el-button type="success" @click="Submit()">提交</el-button>
+                  <el-button type="primary" @click="dialogVisible = false;editsForm={}">取消</el-button>
                 </span>
               </el-dialog>
               <el-dialog
@@ -100,6 +98,7 @@
 <script>
 import headTop from "@/components/headTop";
 import sideBar from "@/components/sideBar";
+import { formatDate } from "../../common/date";
 export default {
   data() {
     return {
@@ -108,95 +107,128 @@ export default {
       dialogVisible: false,
       addFlag: true,
       dialog2Visible: false,
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ],
+      tableData: [],
       search: "",
-
       editsForm: {
+        id: "",
         date: "",
         name: "",
         address: ""
+      },
+      rules: {
+        date: [{ required: true, message: "请输入日期", trigger: "blur" }],
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        address: [{ required: true, message: "请输入地址", trigger: "blur" }]
       }
     };
   },
-  computed: {
-    // 模糊搜索
-    tables() {
-      const search = this.search;
-      console.log(search);
-      if (search) {
-        // // filter() 方法创建一个新的数组，新数组中的元素是通过检查指定数组中符合条件的所有元素。
-        // // 注意： filter() 不会对空数组进行检测。
-        // // 注意： filter() 不会改变原始数组。
-        // return this.tableData.filter(data => {
-        //   // some() 方法用于检测数组中的元素是否满足指定条件;
-        //   // some() 方法会依次执行数组的每个元素：
-        //   // 如果有一个元素满足条件，则表达式返回true , 剩余的元素不会再执行检测;
-        //   // 如果没有满足条件的元素，则返回false。
-        //   // 注意： some() 不会对空数组进行检测。
-        //   // 注意： some() 不会改变原始数组。
-        //   return Object.keys(data).some(key => {
-        //     // indexOf() 返回某个指定的字符在某个字符串中首次出现的位置，如果没有找到就返回-1；
-        //     // 该方法对大小写敏感！所以之前需要toLowerCase()方法将所有查询到内容变为小写。
-        //     return (
-        //       String(data[key])
-        //         .toLowerCase()
-        //         .indexOf(search) > -1
-        //     );
-        //   });
-        // });
-      }
-      return this.dormitory;
-    }
-  },
-
+  computed: {},
   components: {
     headTop,
     sideBar
   },
-
+  mounted() {
+    this.getData();
+  },
   methods: {
-    // getData() {
-    //   this.$axios.get("/api/getdata").then(res => {
-    //     console.log(res);
-    //   });
-    // },
-
+    searchData() {
+      const search = this.search; //获取input搜索框输入值
+      if (search) {
+        // 单列搜索
+        // this.tableData = this.tableData.filter(
+        //   // console.log(this.tableData)
+        //   // item => ~item.date.indexOf(search)
+        // );
+        //全局搜索
+        this.tableData = this.tableData.filter(data => {
+          return Object.keys(data).some(key => {
+            return (
+              String(data[key])
+                .toLowerCase()
+                .indexOf(search) > -1
+            );
+          });
+        });
+      } else {
+        this.getData();
+      }
+    },
+    getData() {
+      this.$axios.get("/api/getdata").then(res => {
+        var i;
+        for (i = 0; i < res.data.length; i++) {
+          res.data[i].date = formatDate(res.data[i].date, "yyyy-MM-dd"); // 时间格式化处理
+        }
+        // console.log(res);
+        this.tableData = res.data;
+      });
+    },
     handleClose(done) {
       done();
     },
-    editBook(index, row) {
-      console.log(index, row);
+    Submit() {
+      console.log(this.addFlag);
+      if (this.addFlag == true) {
+        this.$axios
+          .post("/api/tableData", this.editsForm)
+          .then(res => {
+            if (res.data.status == 200) {
+              this.$message.success("新增成功");
+              this.dialogVisible = false;
+              this.getData();
+              this.editsForm = {};
+            } else {
+              this.$message.error("新增失败");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        this.$axios
+          .post("/api/update/tableData", this.editsForm)
+          .then(res => {
+            if (res.data.status == 200) {
+              this.$message.success("修改成功");
+              this.getData();
+              this.editsForm = {};
+              this.dialogVisible = false;
+            } else {
+              this.$message.error("修改失败");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    },
+    editData(index, row) {
       this.editsForm = Object.assign({}, row);
       this.dialogVisible = true;
       this.addFlag = false;
     },
 
+    handleDel() {
+      this.$axios
+        .post("/api/delete/tableData", { id: this.curId })
+        .then(res => {
+          if (res.data.status == 200) {
+            this.$message.success("删除成功");
+            this.getData();
+            this.dialog2Visible = false;
+          } else {
+            this.$message.error("删除失败");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     Delete(index, row) {
-      //   this.addFlag = false;
-      //   this.dialog2Visible = true;
-      //   this.curId = row.ID;
-      this.tableData.splice(index, 1);
+      this.addFlag = false;
+      this.dialog2Visible = true;
+      this.curId = row.id;
+      console.log(row.date);
     }
   }
 };

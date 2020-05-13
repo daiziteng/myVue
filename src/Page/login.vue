@@ -15,7 +15,9 @@
             <el-input type="password" placeholder="密码" v-model="loginForm.password"></el-input>
           </el-form-item>
           <el-checkbox v-model="checked" style="float:left">记住密码</el-checkbox>
-
+          <a style="float:right;font-size:14px">
+            <router-link to="/register">没有账号，注册一个</router-link>
+          </a>
           <br />
           <br />
           <el-form-item>
@@ -28,7 +30,6 @@
 </template>
 <script>
 import { mapMutations } from "vuex";
-
 export default {
   data() {
     return {
